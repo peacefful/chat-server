@@ -27,8 +27,14 @@ app.use(express.static('public'))
 app.use(usersRouter)
 
 io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg)
+  console.log('User connected')
+  socket.on('join', (room) => {
+    socket.join(room)
+    console.log(`User joined room ${room}`)
+  })
+  socket.on('message', (room, message, username, id) => {
+    io.to(room).emit('message', message, username, id)
+    console.log('Message', message)
   })
 })
 
