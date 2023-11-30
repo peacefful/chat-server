@@ -33,11 +33,17 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
 export const addUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, password }: IUser = req.body
+    const { name, surname, password, appointment, rank, login, phone, role }: IUser = req.body
     const hashedPassword = await hashPassword(password)
     const createUser = await prisma.user.create({
       data: {
-        username,
+			name,
+			surname,
+			appointment,
+			rank,
+			login,
+			phone,
+			role,
         password: hashedPassword
       }
     })
@@ -49,9 +55,9 @@ export const addUser = async (req: Request, res: Response): Promise<void> => {
 
 export const authUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, password }: IUser = req.body
+    const { login, password }: IUser = req.body
     const user = await prisma.user.findFirst({
-      where: { username }
+      where: { login }
     })
 
     if (user) {
@@ -59,7 +65,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
       if (passwordMatch) {
         const token = jwt.sign(
           {
-            username,
+            login,
             password
           },
           keyJwt,
@@ -68,7 +74,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({
           token: `Bearer ${token}`,
           id: user.id,
-          role: user.username
+			 username: login
         })
       } else {
         throw new Error('Пароли не совпадают')
