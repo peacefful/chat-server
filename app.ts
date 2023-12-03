@@ -6,7 +6,7 @@ import { Server } from 'socket.io'
 import cors from 'cors'
 
 import usersRouter from './routers/usersRouter'
-import messagesRouter from './routers/messagesRouter'
+import chatsRouter from './routers/chatsRouter'
 
 import { PrismaClient } from '@prisma/client'
 
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static('public'))
 
 app.use(usersRouter)
-app.use(messagesRouter)
+app.use(chatsRouter)
 
 const prisma = new PrismaClient()
 

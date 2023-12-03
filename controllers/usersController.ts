@@ -10,7 +10,11 @@ const prisma = new PrismaClient()
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await prisma.user.findMany()
+    const user = await prisma.user.findMany({
+		include: {
+			chats: true
+		}
+	 })
     res.send(user)
   } catch (error) {
     console.log(error)
@@ -23,7 +27,10 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     const user = await prisma.user.findUnique({
       where: {
         id
-      }
+      },
+		include: {
+			chats: true
+		}
     })
     res.send(user)
   } catch (error) {

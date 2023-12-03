@@ -14,12 +14,14 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "messages" (
+CREATE TABLE "Chats" (
     "id" SERIAL NOT NULL,
-    "room" TEXT NOT NULL,
-    "sender" TEXT NOT NULL,
-    "message" TEXT NOT NULL,
-    "time" TEXT NOT NULL,
+    "roomName" TEXT NOT NULL,
+    "uuid" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
 
-    CONSTRAINT "messages_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Chats_pkey" PRIMARY KEY ("id")
 );
+
+-- AddForeignKey
+ALTER TABLE "Chats" ADD CONSTRAINT "Chats_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
