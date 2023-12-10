@@ -9,6 +9,7 @@ CREATE TABLE "users" (
     "password" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "role" TEXT NOT NULL,
+    "uuid" TEXT NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );

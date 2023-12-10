@@ -8,8 +8,6 @@ import cors from 'cors'
 import usersRouter from './routers/usersRouter'
 import chatsRouter from './routers/chatsRouter'
 
-import { PrismaClient } from '@prisma/client'
-
 declare const __dirname: string
 
 const app = express()
@@ -30,27 +28,27 @@ app.use(express.static('public'))
 app.use(usersRouter)
 app.use(chatsRouter)
 
-const prisma = new PrismaClient()
-
 io.on('connection', (socket) => {
-	//   console.log('User connected')
-	//   socket.on('join', (room) => {
-	//     socket.join(room)
-	//     console.log(`User joined room ${room}`)
-	//   })
-	socket.on('message', async (message, id, time) => {
-		// try {
-		// 	await prisma.message.create({
-		// 		data: {
-		// 			message
-		// 		}
-		// 	})
-		// } catch (error) {
-		// 	console.log(error)
-		// }
-		io.emit('message', message, id, time)
-	})
-})
+	socket.on('join', (room) => {
+		socket.join(room);
+		console.log(`User ${socket.id} joined room ${room}`);
+	});
+
+	socket.on('message', (message, id, time, uuid) => {
+		io.to(uuid).emit('message', message, id, time);
+		console.log(message, id, time);
+	});
+
+	socket.on('personalInvite', (uuid) => {
+		socket.join(uuid);
+		console.log(`User joined room ${uuid}`);
+	});
+
+	socket.on('messageInvite', (data) => {
+		io.to(data.uuidRoom).emit('messageInvite', data.roomName);
+		console.log(`Сообщение ${data.roomName} в комнате ${data.uuidRoom}`);
+	});
+});
 
 app.get('/', (req: Request, res: Response) => {
 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
