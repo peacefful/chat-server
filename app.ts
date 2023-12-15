@@ -13,9 +13,11 @@ declare const __dirname: string
 const app = express()
 const server = createServer(app)
 
+const PORT:string|number = process.env.PORT || 3000
+
 const io = new Server(server, {
 	cors: {
-		origin: ['http://localhost:5173', 'http://localhost:8100']
+		origin: ['http://localhost:5173', 'http://localhost:4173']
 	}
 })
 
@@ -45,8 +47,8 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('messageInvite', (data) => {
-		io.to(data.uuidRoom).emit('messageInvite', data.roomName);
-		console.log(`Сообщение ${data.roomName} в комнате ${data.uuidRoom}`);
+		socket.broadcast.to(data.userUuid).emit('messageInvite', data.uuidRoom, data.nameRoom);
+		console.log(`Сообщение ${data.nameRoom} в комнате ${data.uuidRoom}`);
 	});
 });
 
@@ -54,6 +56,6 @@ app.get('/', (req: Request, res: Response) => {
 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 })
 
-server.listen(3000, () => {
-	console.log('server running at http://localhost:3000')
+server.listen(PORT, () => {
+	console.log(`server running at http://localhost:${PORT}`)
 })
