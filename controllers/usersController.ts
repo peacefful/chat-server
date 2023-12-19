@@ -68,17 +68,17 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
 		const user = await prisma.user.findFirst({
 			where: { login }
 		})
-
 		if (user) {
 			const passwordMatch = await bcrypt.compare(password, user.password)
 			if (passwordMatch) {
 				const token = jwt.sign(
 					{
+						id: user.id,
 						login,
 						password
 					},
 					keyJwt,
-					{ expiresIn: '5h' }
+					{ expiresIn: '2h' }
 				)
 				res.status(200).json({
 					token: `Bearer ${token}`,
@@ -86,10 +86,14 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
 					uuid: user.uuid
 				})
 			} else {
-				throw new Error('Пароли не совпадают')
+				res.status(401).json({
+					message: "Пароли не совпадают"
+				})
 			}
 		} else {
-			throw new Error('Пользователь не найден')
+			res.status(404).json({
+				message: "Пользователь не найден"
+			})
 		}
 	} catch (error) {
 		console.log(error)

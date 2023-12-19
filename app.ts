@@ -4,24 +4,28 @@ import { createServer } from 'http'
 import { Response, Request } from 'express'
 import { Server } from 'socket.io'
 import cors from 'cors'
+import passport from "passport"
 
 import usersRouter from './routers/usersRouter'
 import chatsRouter from './routers/chatsRouter'
+
+import { usersPassport } from "./middleware/usersPassport"
 
 declare const __dirname: string
 
 const app = express()
 const server = createServer(app)
 
-const PORT:string|number = process.env.PORT || 3000
+app.use(cors())
+
+app.use(passport.initialize())
+usersPassport()
 
 const io = new Server(server, {
 	cors: {
-		origin: ['http://localhost:5173', 'http://localhost:4173']
+		origin: ['http://localhost:5173', 'https://poligramm.kz']
 	}
 })
-
-app.use(cors())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -55,6 +59,8 @@ io.on('connection', (socket) => {
 app.get('/', (req: Request, res: Response) => {
 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 })
+
+const PORT:string|number = process.env.PORT || 3000
 
 server.listen(PORT, () => {
 	console.log(`server running at http://localhost:${PORT}`)
