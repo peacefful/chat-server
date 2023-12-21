@@ -30,5 +30,5 @@ model Chats {
    userId   Int
    user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-   @@map("Chats")
+   @@map("chats")
 }

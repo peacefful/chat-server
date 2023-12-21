@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { keyJwt } from '../config/key'
 import { v4 as uuidv4 } from 'uuid';
+import { validationResult } from 'express-validator'
 
 const prisma = new PrismaClient()
 
@@ -41,22 +42,27 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
 export const addUser = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { name, surname, password, appointment, rank, login, phone, role }: IUser = req.body
-		const hashedPassword = await hashPassword(password)
-		const createUser = await prisma.user.create({
-			data: {
-				name,
-				surname,
-				appointment,
-				rank,
-				login,
-				phone,
-				role,
-				uuid: uuidv4(),
-				password: hashedPassword
-			}
-		})
-		res.send(createUser)
+		const errors = validationResult(req)
+		if (!errors.isEmpty()) {
+			res.status(400).json({ errors: errors.array() })
+		} else {
+			const { name, surname, password, appointment, rank, login, phone, role }: IUser = req.body
+			const hashedPassword = await hashPassword(password)
+			const createUser = await prisma.user.create({
+				data: {
+					name,
+					surname,
+					appointment,
+					rank,
+					login,
+					phone,
+					role,
+					uuid: uuidv4(),
+					password: hashedPassword
+				}
+			})
+			res.send(createUser)
+		}
 	} catch (error) {
 		console.log(error)
 	}
