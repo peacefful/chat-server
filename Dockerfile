@@ -13,9 +13,6 @@ RUN npm install -g typescript && npm install
 # Copy the rest of the application code to the container
 COPY . .
 
-# make wait-for-postgres.sh executable
-RUN chmod +x wait-for-postgres.sh
-
 # Build TypeScript files
 RUN npm run build
 

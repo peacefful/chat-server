@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ./wait-for-postgres.sh db 
     ports:
       - "3000:3000"
     volumes:
