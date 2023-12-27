@@ -9,8 +9,6 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-    depends_on:
-      - db
   db:
     image: postgres:12.1-alpine
     ports:
@@ -19,5 +17,3 @@ services:
       - POSTGRES_DB=db_chat
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=root
-    volumes:
-      - db_chat_volume:/var/lib/postgresql/data/
