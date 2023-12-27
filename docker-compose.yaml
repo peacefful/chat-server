@@ -12,7 +12,7 @@ services:
   db:
     image: postgres:12.1-alpine
     ports:
-      - '5432:5432'
+      - '5454:5432'
     environment:
       - POSTGRES_DB=db_chat
       - POSTGRES_USER=admin
