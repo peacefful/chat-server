@@ -23,7 +23,7 @@ usersPassport()
 
 const io = new Server(server, {
 	cors: {
-		origin: ['http://localhost:5173', 'https://poligramm.kz']
+		origin: ['http://localhost:5173', 'http://localhost:4173', 'https://poligramm.kz', 'http://poligramm.kz']
 	}
 })
 
@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
 
 	socket.on('messageInvite', (data) => {
 		socket.broadcast.to(data.userUuid).emit('messageInvite', data.uuidRoom, data.nameRoom);
-		console.log(`Сообщение ${data.nameRoom} в комнате ${data.uuidRoom}`);
+		console.log(`Пользователь приглашен в комнату ${data.nameRoom} [${data.uuidRoom}]`);
 	});
 });
 
