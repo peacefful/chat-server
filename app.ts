@@ -10,6 +10,7 @@ import usersRouter from './routers/usersRouter'
 import chatsRouter from './routers/chatsRouter'
 
 import { usersPassport } from "./middleware/usersPassport"
+import { createSecureServer } from 'http2'
 
 declare const __dirname: string
 
@@ -51,8 +52,8 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('messageInvite', (data) => {
-		socket.broadcast.to(data.userUuid).emit('messageInvite', data.uuidRoom, data.nameRoom);
-		console.log(`Пользователь приглашен в комнату ${data.nameRoom} [${data.uuidRoom}]`);
+		socket.broadcast.to(data.userUuid).emit('messageInvite', data.uuidRoom, data.titleRoom, data.userUuid);
+		console.log(`Пользователь ${data.userUuid} приглашен в комнату ${data.titleRoom} [${data.uuidRoom}]`);
 	});
 });
 
