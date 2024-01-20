@@ -9,7 +9,7 @@ import { Server } from 'socket.io'
 import usersRouter from './routers/usersRouter'
 import chatsRouter from './routers/chatsRouter'
 
-import sockets from "./controllers/socketController"
+import sockets from "./controllers/socketsController"
 
 import { usersPassport } from "./middleware/usersPassport"
 import { createSecureServer } from 'http2'
