@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - '3000:3000'
     volumes:
       - .:/app
     env_file:
@@ -26,4 +26,4 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=admin
       - PGADMIN_LISTEN_PORT=5050
     ports:
-      - "5054:5050"
+      - '5054:5050'
