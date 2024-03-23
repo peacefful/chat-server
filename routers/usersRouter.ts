@@ -13,7 +13,6 @@ router.post(
   checkValidateDatas('surname', 2, 15),
   checkValidateDatas('login', 5, 15),
   checkValidateDatas('password', 8, 20),
-  checkValidateDatas('phone', 10, 10),
   addUser
 )
 router.post('/api/users/auth', authUser)

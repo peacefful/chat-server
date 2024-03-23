@@ -1,34 +1,30 @@
 generator client {
-   provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-   provider = "postgresql"
-   url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-   id          Int     @id @default(autoincrement())
-   surname     String
-   name        String
-   appointment String
-   rank        String
-   login       String
-   password    String
-   phone       String
-   role        String
-   uuid        String
-   chats       Chats[]
+  id       Int     @id @default(autoincrement())
+  name     String
+  surname  String
+  login    String
+  password String
+  uuid     String
+  chats    Chats[]
 
-   @@map("users")
+  @@map("users")
 }
 
 model Chats {
-   id       Int    @id @default(autoincrement())
-   roomName String
-   uuid     String
-   userId   Int
-   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id       Int    @id @default(autoincrement())
+  roomName String
+  uuid     String
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-   @@map("chats")
+  @@map("chats")
 }

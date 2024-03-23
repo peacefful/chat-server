@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
-import { IUser } from '../interfaces/iUsers'
+import { IUser } from '../types/iUsers'
 import { hashPassword } from '../utils/hashPasword'
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import { keyJwt } from '../config/key'
 import { v4 as uuidv4 } from 'uuid'
 import { validationResult } from 'express-validator'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
@@ -46,19 +46,15 @@ export const addUser = async (req: Request, res: Response): Promise<void> => {
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() })
     } else {
-      const { name, surname, password, appointment, rank, login, phone, role }: IUser = req.body
+      const { name, surname, password, login }: IUser = req.body
       const hashedPassword = await hashPassword(password)
       const createUser = await prisma.user.create({
         data: {
           name,
           surname,
-          appointment,
-          rank,
           login,
-          phone,
-          role,
+          password: hashedPassword,
           uuid: uuidv4(),
-          password: hashedPassword
         }
       })
       res.send(createUser)

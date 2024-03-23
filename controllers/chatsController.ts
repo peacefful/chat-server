@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
-import type { IChats } from '../interfaces/iChats'
+import type { IChats } from '../types/iChats'
 
 const prisma = new PrismaClient()
 
