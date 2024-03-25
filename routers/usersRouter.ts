@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getUser, addUser, authUser, getUsers, deleteUser } from '../controllers/usersController'
+import { getUser, addUser, authUser, getUsers, deleteUser, refreshToken } from '../controllers/usersController'
 import passport from 'passport'
 import { checkValidateDatas } from '../middleware/validateDatas'
 
@@ -15,7 +15,8 @@ router.post(
   checkValidateDatas('password', 8, 20),
   addUser
 )
-router.post('/api/users/auth', authUser)
 router.delete('/api/users/:id', passport.authenticate('jwt', { session: false }), deleteUser)
+router.post('/api/users/auth', authUser)
+router.post('/api/users/auth/refresh', refreshToken)
 
 export default router

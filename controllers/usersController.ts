@@ -54,11 +54,25 @@ export const addUser = async (req: Request, res: Response): Promise<void> => {
           surname,
           login,
           password: hashedPassword,
-          uuid: uuidv4(),
+          uuid: uuidv4()
         }
       })
       res.send(createUser)
     }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id: number = parseInt(req.params.id)
+    const user = await prisma.user.delete({
+      where: {
+        id
+      }
+    })
+    res.send(user)
   } catch (error) {
     console.log(error)
   }
@@ -73,7 +87,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
     if (user) {
       const passwordMatch = await bcrypt.compare(password, user.password)
       if (passwordMatch) {
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
           {
             id: user.id,
             login,
@@ -82,8 +96,18 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
           keyJwt,
           { expiresIn: '2h' }
         )
+        const refreshToken = jwt.sign(
+          {
+            id: user.id,
+            login,
+            password
+          },
+          keyJwt,
+          { expiresIn: '2d' }
+        )
         res.status(200).json({
-          token: `Bearer ${token}`,
+          accessToken,
+          refreshToken,
           id: user.id,
           uuid: user.uuid,
           name: user.name,
@@ -104,16 +128,59 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const refreshToken = async (
+  req: Request,
+  res: Response<any, Record<string, any>>
+): Promise<void> => {
   try {
-    const id: number = parseInt(req.params.id)
-    const user = await prisma.user.delete({
-      where: {
-        id
+    const { refreshToken } = req.body
+    if (!refreshToken) {
+      res.status(400).json({
+        message: 'Отсутствует refreshToken'
+      })
+    }
+
+    jwt.verify(refreshToken, keyJwt, async (err: any, decoded: any) => {
+      if (err) {
+        return res.status(401).json({
+          message: 'Неверный или истекший refreshToken'
+        })
       }
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.id }
+      })
+      if (!user) {
+        return res.status(404).json({
+          message: 'Пользователь не найден'
+        })
+      }
+
+      const accessToken = jwt.sign(
+        {
+          id: user.id,
+          login: user.login
+        },
+        keyJwt,
+        { expiresIn: '2h' }
+      )
+
+      const refreshToken = jwt.sign(
+        {
+          id: user.id,
+          login: user.login
+        },
+        keyJwt,
+        { expiresIn: '7d' }
+      )
+      res.status(200).json({
+        accessToken,
+        refreshToken
+      })
     })
-    res.send(user)
   } catch (error) {
     console.log(error)
+    res.status(500).json({
+      message: 'Ошибка сервера'
+    })
   }
 }
