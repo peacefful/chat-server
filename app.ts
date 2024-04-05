@@ -12,7 +12,6 @@ import chatsRouter from './routers/chatsRouter'
 import sockets from './controllers/socketsController'
 
 import { usersPassport } from './middleware/usersPassport'
-import { createSecureServer } from 'http2'
 
 declare const __dirname: string
 

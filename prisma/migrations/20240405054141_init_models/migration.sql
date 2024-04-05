@@ -1,13 +1,12 @@
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
-    "surname" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "appointment" TEXT NOT NULL,
-    "rank" TEXT NOT NULL,
+    "surname" TEXT NOT NULL,
     "login" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
+    "appointment" TEXT NOT NULL,
+    "rank" TEXT NOT NULL,
     "role" TEXT NOT NULL,
     "uuid" TEXT NOT NULL,
 

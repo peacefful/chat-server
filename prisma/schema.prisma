@@ -8,13 +8,16 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  name     String
-  surname  String
-  login    String
-  password String
-  uuid     String
-  chats    Chats[]
+  id          Int     @id @default(autoincrement())
+  name        String
+  surname     String
+  login       String
+  password    String
+  appointment String
+  rank        String
+  role        String
+  uuid        String
+  chats       Chats[]
 
   @@map("users")
 }

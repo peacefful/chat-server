@@ -46,13 +46,16 @@ export const addUser = async (req: Request, res: Response): Promise<void> => {
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() })
     } else {
-      const { name, surname, password, login }: IUser = req.body
-      const hashedPassword = await hashPassword(password)
+      const user: IUser = req.body
+      const hashedPassword = await hashPassword(user.password)
       const createUser = await prisma.user.create({
         data: {
-          name,
-          surname,
-          login,
+          name: user.name,
+          surname: user.surname,
+          login: user.login,
+          appointment: user.appointment,
+          rank: user.rank,
+          role: user.role,
           password: hashedPassword,
           uuid: uuidv4()
         }
@@ -109,9 +112,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
           accessToken,
           refreshToken,
           id: user.id,
-          uuid: user.uuid,
-          name: user.name,
-          surname: user.surname
+          uuid: user.uuid
         })
       } else {
         res.status(401).json({
@@ -134,6 +135,7 @@ export const refreshToken = async (
 ): Promise<void> => {
   try {
     const { refreshToken } = req.body
+
     if (!refreshToken) {
       res.status(400).json({
         message: 'Отсутствует refreshToken'
@@ -146,9 +148,11 @@ export const refreshToken = async (
           message: 'Неверный или истекший refreshToken'
         })
       }
+
       const user = await prisma.user.findUnique({
         where: { id: decoded.id }
       })
+
       if (!user) {
         return res.status(404).json({
           message: 'Пользователь не найден'
@@ -163,7 +167,6 @@ export const refreshToken = async (
         keyJwt,
         { expiresIn: '2h' }
       )
-
       const refreshToken = jwt.sign(
         {
           id: user.id,
