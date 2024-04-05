@@ -1,4 +1,5 @@
 FROM node:16
+RUN npm install -g npm@8.19.4
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install -g typescript && npm install
