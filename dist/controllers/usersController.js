@@ -1,156 +1,186 @@
-'use strict'
-var __awaiter =
-  (this && this.__awaiter) ||
-  function (thisArg, _arguments, P, generator) {
-    function adopt(value) {
-      return value instanceof P
-        ? value
-        : new P(function (resolve) {
-            resolve(value)
-          })
-    }
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value))
-        } catch (e) {
-          reject(e)
-        }
-      }
-      function rejected(value) {
-        try {
-          step(generator['throw'](value))
-        } catch (e) {
-          reject(e)
-        }
-      }
-      function step(result) {
-        result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected)
-      }
-      step((generator = generator.apply(thisArg, _arguments || [])).next())
-    })
-  }
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod }
-  }
-Object.defineProperty(exports, '__esModule', { value: true })
-exports.deleteUser =
-  exports.authUser =
-  exports.addUser =
-  exports.getUser =
-  exports.getUsers =
-    void 0
-const client_1 = require('@prisma/client')
-const hashPasword_1 = require('../utils/hashPasword')
-const bcrypt_1 = __importDefault(require('bcrypt'))
-const jsonwebtoken_1 = __importDefault(require('jsonwebtoken'))
-const key_1 = require('../config/key')
-const uuid_1 = require('uuid')
-const prisma = new client_1.PrismaClient()
-const getUsers = (req, res) =>
-  __awaiter(void 0, void 0, void 0, function* () {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.refreshToken = exports.authUser = exports.deleteUser = exports.addUser = exports.getUser = exports.getUsers = void 0;
+const client_1 = require("@prisma/client");
+const hashPasword_1 = require("../utils/hashPasword");
+const key_1 = require("../config/key");
+const uuid_1 = require("uuid");
+const express_validator_1 = require("express-validator");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const prisma = new client_1.PrismaClient();
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      const user = yield prisma.user.findMany({
-        include: {
-          chats: true
-        }
-      })
-      res.send(user)
-    } catch (error) {
-      console.log(error)
+        const user = yield prisma.user.findMany({
+            include: {
+                chats: true
+            }
+        });
+        res.send(user);
     }
-  })
-exports.getUsers = getUsers
-const getUser = (req, res) =>
-  __awaiter(void 0, void 0, void 0, function* () {
-    try {
-      const id = parseInt(req.params.id)
-      const user = yield prisma.user.findUnique({
-        where: {
-          id
-        },
-        include: {
-          chats: true
-        }
-      })
-      res.send(user)
-    } catch (error) {
-      console.log(error)
+    catch (error) {
+        console.log(error);
     }
-  })
-exports.getUser = getUser
-const addUser = (req, res) =>
-  __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.getUsers = getUsers;
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      const { name, surname, password, appointment, rank, login, phone, role } = req.body
-      const hashedPassword = yield (0, hashPasword_1.hashPassword)(password)
-      const createUser = yield prisma.user.create({
-        data: {
-          name,
-          surname,
-          appointment,
-          rank,
-          login,
-          phone,
-          role,
-          uuid: (0, uuid_1.v4)(),
-          password: hashedPassword
-        }
-      })
-      res.send(createUser)
-    } catch (error) {
-      console.log(error)
-    }
-  })
-exports.addUser = addUser
-const authUser = (req, res) =>
-  __awaiter(void 0, void 0, void 0, function* () {
-    try {
-      const { login, password } = req.body
-      const user = yield prisma.user.findFirst({
-        where: { login }
-      })
-      if (user) {
-        const passwordMatch = yield bcrypt_1.default.compare(password, user.password)
-        if (passwordMatch) {
-          const token = jsonwebtoken_1.default.sign(
-            {
-              login,
-              password
+        const id = parseInt(req.params.id);
+        const user = yield prisma.user.findUnique({
+            where: {
+                id
             },
-            key_1.keyJwt,
-            { expiresIn: '5h' }
-          )
-          res.status(200).json({
-            token: `Bearer ${token}`,
-            id: user.id,
-            uuid: user.uuid
-          })
-        } else {
-          throw new Error('Пароли не совпадают')
-        }
-      } else {
-        throw new Error('Пользователь не найден')
-      }
-    } catch (error) {
-      console.log(error)
+            include: {
+                chats: true
+            }
+        });
+        res.send(user);
     }
-  })
-exports.authUser = authUser
-const deleteUser = (req, res) =>
-  __awaiter(void 0, void 0, void 0, function* () {
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.getUser = getUser;
+const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-      const id = parseInt(req.params.id)
-      const user = yield prisma.user.delete({
-        where: {
-          id
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array() });
         }
-      })
-      res.send(user)
-    } catch (error) {
-      console.log(error)
+        else {
+            const user = req.body;
+            const hashedPassword = yield (0, hashPasword_1.hashPassword)(user.password);
+            const createUser = yield prisma.user.create({
+                data: {
+                    name: user.name,
+                    surname: user.surname,
+                    login: user.login,
+                    appointment: user.appointment,
+                    rank: user.rank,
+                    role: user.role,
+                    password: hashedPassword,
+                    uuid: (0, uuid_1.v4)()
+                }
+            });
+            res.send(createUser);
+        }
     }
-  })
-exports.deleteUser = deleteUser
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.addUser = addUser;
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const user = yield prisma.user.delete({
+            where: {
+                id
+            }
+        });
+        res.send(user);
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.deleteUser = deleteUser;
+const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { login, password } = req.body;
+        const user = yield prisma.user.findFirst({
+            where: { login }
+        });
+        if (user) {
+            const passwordMatch = yield bcrypt_1.default.compare(password, user.password);
+            if (passwordMatch) {
+                const accessToken = jsonwebtoken_1.default.sign({
+                    id: user.id,
+                    login,
+                    password
+                }, key_1.keyJwt, { expiresIn: '2h' });
+                const refreshToken = jsonwebtoken_1.default.sign({
+                    id: user.id,
+                    login,
+                    password
+                }, key_1.keyJwt, { expiresIn: '2d' });
+                res.status(200).json({
+                    accessToken,
+                    refreshToken,
+                    id: user.id,
+                    uuid: user.uuid
+                });
+            }
+            else {
+                res.status(401).json({
+                    message: 'Пароли не совпадают'
+                });
+            }
+        }
+        else {
+            res.status(404).json({
+                message: 'Пользователь не найден'
+            });
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.authUser = authUser;
+const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { refreshToken } = req.body;
+        if (!refreshToken) {
+            res.status(400).json({
+                message: 'Отсутствует refreshToken'
+            });
+        }
+        jsonwebtoken_1.default.verify(refreshToken, key_1.keyJwt, (err, decoded) => __awaiter(void 0, void 0, void 0, function* () {
+            if (err) {
+                return res.status(401).json({
+                    message: 'Неверный или истекший refreshToken'
+                });
+            }
+            const user = yield prisma.user.findUnique({
+                where: { id: decoded.id }
+            });
+            if (!user) {
+                return res.status(404).json({
+                    message: 'Пользователь не найден'
+                });
+            }
+            const accessToken = jsonwebtoken_1.default.sign({
+                id: user.id,
+                login: user.login
+            }, key_1.keyJwt, { expiresIn: '2h' });
+            const refreshToken = jsonwebtoken_1.default.sign({
+                id: user.id,
+                login: user.login
+            }, key_1.keyJwt, { expiresIn: '7d' });
+            res.status(200).json({
+                accessToken,
+                refreshToken
+            });
+        }));
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Ошибка сервера'
+        });
+    }
+});
+exports.refreshToken = refreshToken;
