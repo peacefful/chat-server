@@ -112,7 +112,9 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
           accessToken,
           refreshToken,
           id: user.id,
-          uuid: user.uuid
+          uuid: user.uuid,
+          name: user.name,
+          surname: user.surname,
         })
       } else {
         res.status(401).json({
