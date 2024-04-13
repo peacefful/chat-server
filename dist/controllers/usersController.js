@@ -117,10 +117,11 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     password
                 }, key_1.keyJwt, { expiresIn: '2d' });
                 res.status(200).json({
+                    username: `${user.name} ${user.surname}`,
                     accessToken,
                     refreshToken,
                     id: user.id,
-                    uuid: user.uuid
+                    uuid: user.uuid,
                 });
             }
             else {

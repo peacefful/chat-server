@@ -1,5 +1,12 @@
 import { Router } from 'express'
-import { getUser, addUser, authUser, getUsers, deleteUser, refreshToken } from '../controllers/usersController'
+import {
+  getUser,
+  addUser,
+  authUser,
+  getUsers,
+  deleteUser,
+  refreshToken
+} from '../controllers/usersController'
 import passport from 'passport'
 import { checkValidateDatas } from '../middleware/validateDatas'
 
