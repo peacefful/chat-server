@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import { IUser } from '../types/iUsers'
 import { hashPassword } from '../utils/hashPasword'
-import { keyJwt } from '../config/key'
+import { keyJwt, refreshKeyJwt } from '../config/key'
 import { v4 as uuidv4 } from 'uuid'
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
@@ -94,7 +94,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
             password
           },
           keyJwt,
-          { expiresIn: '2h' }
+          { expiresIn: '1h' }
         )
         const refreshToken = jwt.sign(
           {
@@ -106,12 +106,10 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
           { expiresIn: '2d' }
         )
         res.status(200).json({
-          accessToken,
           refreshToken,
+          accessToken,
           id: user.id,
-          uuid: user.uuid,
-          name: user.name,
-          surname: user.surname
+          uuid: user.uuid
         })
       } else {
         res.status(401).json({
@@ -133,26 +131,26 @@ export const refreshToken = async (
   res: Response<any, Record<string, any>>
 ): Promise<void> => {
   try {
-    const { refreshToken } = req.body
+    const { refreshToken } = req.body;
     if (!refreshToken) {
       res.status(400).json({
         message: 'Отсутствует refreshToken'
-      })
+      });
     }
 
     jwt.verify(refreshToken, keyJwt, async (err: any, decoded: any) => {
       if (err) {
         return res.status(401).json({
           message: 'Неверный или истекший refreshToken'
-        })
+        });
       }
       const user = await prisma.user.findUnique({
         where: { id: decoded.id }
-      })
+      });
       if (!user) {
         return res.status(404).json({
           message: 'Пользователь не найден'
-        })
+        });
       }
 
       const accessToken = jwt.sign(
@@ -161,26 +159,26 @@ export const refreshToken = async (
           login: user.login
         },
         keyJwt,
-        { expiresIn: '2h' }
-      )
+        { expiresIn: '2m' }
+      );
 
-      const refreshToken = jwt.sign(
+      const newRefreshToken = jwt.sign(
         {
           id: user.id,
           login: user.login
         },
         keyJwt,
         { expiresIn: '7d' }
-      )
+      );
       res.status(200).json({
         accessToken,
-        refreshToken
-      })
-    })
+        refreshToken: newRefreshToken
+      });
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       message: 'Ошибка сервера'
-    })
+    });
   }
-}
+};

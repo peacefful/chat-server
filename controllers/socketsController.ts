@@ -5,16 +5,23 @@ const sockets = (io: Server) => {
     socket.on('join', (room) => {
       socket.join(room)
       console.log(`User joined room ${room}`)
+      console.log("___________________");
     })
 
     socket.on('userJoin', (room, user) => {
       socket.broadcast.to(room).emit('userJoin', user)
     })
 
-    socket.on('message', (text, id, sendTime, uuid, username) => {
-      io.to(uuid).emit('message', text, id, sendTime, uuid, username)
-      console.log(text, id, username)
+    socket.on('message', message => {
+      io.to(message.uuid).emit('message', message)
+      console.log(message)
     })
+
+    // socket.on('message', newMessage => {
+    //   io.to(newMessage.uuid).emit('message', newMessage.text, newMessage.id, newMessage.sendTime, newMessage.uuid, newMessage.username)
+    //   console.log(newMessage);
+    //   console.log(newMessage.text, newMessage.id, newMessage.username)
+    // })
 
     socket.on('personalInvite', (uuid) => {
       socket.join(uuid)

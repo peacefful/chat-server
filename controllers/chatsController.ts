@@ -13,6 +13,20 @@ export const getChats = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
+export const getChat = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const id: number = parseInt(req.params.id)
+    const chat = await prisma.chats.findFirst({
+      where: {
+        id
+      }
+    })
+    res.send(chat)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const addChat = async (req: Request, res: Response): Promise<void> => {
   try {
     const chatData: IChats = req.body
