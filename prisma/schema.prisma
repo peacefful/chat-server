@@ -22,9 +22,24 @@ model User {
 model Chats {
   id       Int    @id @default(autoincrement())
   roomName String
+  description String?
   uuid     String
   userId   Int
+  messages Message[]
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("chats")
+}
+
+
+model Message {
+  id       Int    @id @default(autoincrement())
+  chatId   Int 
+  text     String
+  sendTime String
+  username String
+  uuid     Int
+  chat     Chats   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@map("Message")
 }

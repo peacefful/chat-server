@@ -14,7 +14,7 @@ const sockets = (io: Server) => {
 
     socket.on('message', message => {
       io.to(message.uuid).emit('message', message)
-      console.log(message)
+      console.log('m', message)
     })
 
     // socket.on('message', newMessage => {
@@ -31,7 +31,7 @@ const sockets = (io: Server) => {
     socket.on('messageInvite', (data) => {
       socket.broadcast
         .to(data.userUuid)
-        .emit('messageInvite', data.uuidRoom, data.titleRoom, data.userUuid)
+        .emit('messageInvite', data.uuidRoom, data.titleRoom, data.userUuid, data.roomId)
       console.log(
         `Пользователь ${data.userUuid} приглашен в комнату ${data.titleRoom} [${data.uuidRoom}]`
       )
