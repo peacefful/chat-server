@@ -28,9 +28,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:5173',
-      'http://localhost:4173',
-      'https://poligramm.kz',
-      'http://poligramm.kz'
+      'http://141.98.154.78:8080/',
     ]
   }
 })

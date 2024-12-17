@@ -1,3 +1,4 @@
+
 version: '3'
 
 services:
@@ -11,19 +12,13 @@ services:
       - .:/app
     env_file:
       - .env
+    depends_on:
+      - db
   db:
     image: postgres:12.1-alpine
     ports:
-      - '5432:5432'
+      - '5439:5432'
     environment:
       - POSTGRES_DB=db_chat
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=root
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-      - PGADMIN_LISTEN_PORT=5050
-    ports:
-      - '5054:5050'

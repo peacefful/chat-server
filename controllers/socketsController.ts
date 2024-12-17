@@ -8,7 +8,7 @@ const sockets = (io: Server) => {
     socket.on('join', (room) => {
       socket.join(room)
       console.log(`User joined room ${room}`)
-      console.log("___________________");
+      console.log('___________________')
     })
 
     socket.on('userJoin', (room, user) => {
@@ -18,19 +18,30 @@ const sockets = (io: Server) => {
     socket.on('message', async (message) => {
       io.to(message.uuid).emit('message', message)
 
-      const prismaMessage = await prisma.message.create({
-        data : {
-          chatId: message.chatId,
-          userId: +message.userId,
-          text: message.text,
-          sendTime: message.sendTime,
-          username: message.username,
-          file: message.file,
-          uuid: message.uuid,
+      const chat = await prisma.chats.findFirst({
+        where: {
+          id: message.chatId
+        },
+        include: {
+          messages: true
         }
-      });
+      })
 
-      console.log('prismaMessage', prismaMessage);
+      if (chat) {
+        const prismaMessage = await prisma.message.create({
+          data: {
+            chatId: message.chatId,
+            userId: +message.userId,
+            text: message.text,
+            sendTime: message.sendTime,
+            username: message.username,
+            file: message.file,
+            uuid: message.uuid
+          }
+        })
+
+        console.log('prismaMessage', prismaMessage)
+      }
 
       console.log(message)
     })

@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import type { IChats } from '../types/iChats'
-import { log } from 'node:console'
 
 const prisma = new PrismaClient()
 
