@@ -14,11 +14,29 @@ CREATE TABLE "users" (
 CREATE TABLE "chats" (
     "id" SERIAL NOT NULL,
     "roomName" TEXT NOT NULL,
+    "description" TEXT,
     "uuid" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
 
     CONSTRAINT "chats_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "message" (
+    "id" SERIAL NOT NULL,
+    "chatId" INTEGER NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "text" TEXT NOT NULL,
+    "sendTime" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "uuid" TEXT NOT NULL,
+    "file" TEXT NOT NULL,
+
+    CONSTRAINT "message_pkey" PRIMARY KEY ("id")
+);
+
 -- AddForeignKey
 ALTER TABLE "chats" ADD CONSTRAINT "chats_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "message" ADD CONSTRAINT "message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "chats"("id") ON DELETE CASCADE ON UPDATE CASCADE;

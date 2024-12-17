@@ -35,11 +35,13 @@ model Chats {
 model Message {
   id       Int    @id @default(autoincrement())
   chatId   Int 
+  userId   Int 
   text     String
   sendTime String
   username String
-  uuid     Int
+  uuid     String
+  file     String
   chat     Chats   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
-  @@map("Message")
+  @@map("message")
 }

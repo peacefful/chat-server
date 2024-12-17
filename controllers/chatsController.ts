@@ -1,12 +1,17 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import type { IChats } from '../types/iChats'
+import { log } from 'node:console'
 
 const prisma = new PrismaClient()
 
 export const getChats = async (req: Request, res: Response): Promise<void> => {
   try {
-    const chats = await prisma.chats.findMany()
+    const chats = await prisma.chats.findMany({
+      include: {
+        messages: true
+      }
+    })
     res.send(chats)
   } catch (error) {
     console.log(error)
@@ -19,6 +24,9 @@ export const getChat = async (req: Request, res: Response): Promise<void> => {
     const chat = await prisma.chats.findFirst({
       where: {
         id
+      },
+      include: {
+        messages: true
       }
     })
     res.send(chat)

@@ -1,4 +1,7 @@
+import { PrismaClient } from '@prisma/client'
 import { Server } from 'socket.io'
+
+const prisma = new PrismaClient()
 
 const sockets = (io: Server) => {
   io.on('connection', (socket) => {
@@ -12,9 +15,24 @@ const sockets = (io: Server) => {
       socket.broadcast.to(room).emit('userJoin', user)
     })
 
-    socket.on('message', message => {
+    socket.on('message', async (message) => {
       io.to(message.uuid).emit('message', message)
-      console.log('m', message)
+
+      const prismaMessage = await prisma.message.create({
+        data : {
+          chatId: message.chatId,
+          userId: +message.userId,
+          text: message.text,
+          sendTime: message.sendTime,
+          username: message.username,
+          file: message.file,
+          uuid: message.uuid,
+        }
+      });
+
+      console.log('prismaMessage', prismaMessage);
+
+      console.log(message)
     })
 
     // socket.on('message', newMessage => {
