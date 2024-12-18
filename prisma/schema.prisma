@@ -45,3 +45,12 @@ model Message {
 
   @@map("message")
 }
+
+
+model Analise {
+  id       Int    @id @default(autoincrement())
+  fileLength   Int 
+  textLength   Int 
+  
+  @@map("analise")
+}

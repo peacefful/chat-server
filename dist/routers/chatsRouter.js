@@ -28,6 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ChatController = __importStar(require("../controllers/chatsController"));
+const AnaliseController = __importStar(require("../controllers/analise"));
 const passport_1 = __importDefault(require("passport"));
 const router = (0, express_1.Router)();
 router.get('/api/chats', passport_1.default.authenticate('jwt', { session: false }), ChatController.getChats);
@@ -35,4 +36,5 @@ router.get('/api/chats/:id', passport_1.default.authenticate('jwt', { session: f
 router.post('/api/chats', passport_1.default.authenticate('jwt', { session: false }), ChatController.addChat);
 router.put('/api/chats/:id', passport_1.default.authenticate('jwt', { session: false }), ChatController.updateChat);
 router.delete('/api/chats/:id', passport_1.default.authenticate('jwt', { session: false }), ChatController.deleteChat);
+router.post("/api/analise/:id", AnaliseController.getAnaliseChat);
 exports.default = router;

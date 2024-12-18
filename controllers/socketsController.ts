@@ -42,8 +42,6 @@ const sockets = (io: Server) => {
 
         console.log('prismaMessage', prismaMessage)
       }
-
-      console.log(message)
     })
 
     // socket.on('message', newMessage => {

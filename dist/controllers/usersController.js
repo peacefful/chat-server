@@ -107,7 +107,7 @@ const authUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     id: user.id,
                     login,
                     password
-                }, key_1.keyJwt, { expiresIn: '1h' });
+                }, key_1.keyJwt, { expiresIn: '3h' });
                 const refreshToken = jsonwebtoken_1.default.sign({
                     id: user.id,
                     login,
