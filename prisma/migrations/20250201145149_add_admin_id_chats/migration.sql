@@ -15,6 +15,7 @@ CREATE TABLE "chats" (
     "id" SERIAL NOT NULL,
     "roomName" TEXT NOT NULL,
     "description" TEXT,
+    "adminId" INTEGER NOT NULL,
     "uuid" TEXT NOT NULL,
     "userId" INTEGER NOT NULL,
 
@@ -33,6 +34,15 @@ CREATE TABLE "message" (
     "file" TEXT NOT NULL,
 
     CONSTRAINT "message_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "analise" (
+    "id" SERIAL NOT NULL,
+    "fileLength" INTEGER NOT NULL,
+    "textLength" INTEGER NOT NULL,
+
+    CONSTRAINT "analise_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey

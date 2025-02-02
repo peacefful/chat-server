@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+  import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import type { IChats } from '../types/iChats'
 
@@ -28,7 +28,17 @@ export const getChat = async (req: Request, res: Response): Promise<void> => {
         messages: true
       }
     })
-    res.send(chat)
+
+    const chatWithMessages = await prisma.chats.findFirst({
+      where: {
+        uuid: chat?.uuid
+      },
+      include: {
+        messages: true
+      }
+    })
+
+    res.send(chatWithMessages)
   } catch (error) {
     console.log(error)
   }
@@ -39,7 +49,7 @@ export const addChat = async (req: Request, res: Response): Promise<void> => {
     const chatData: IChats = req.body
     const chats = await prisma.chats.create({
       data: {
-        ...chatData
+        ...chatData,
       }
     })
     res.send(chats)

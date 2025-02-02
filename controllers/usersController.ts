@@ -94,7 +94,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
             password
           },
           keyJwt,
-          { expiresIn: '3h' }
+          { expiresIn: '30m' }
         )
         const refreshToken = jwt.sign(
           {

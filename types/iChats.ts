@@ -3,4 +3,5 @@ export interface IChats {
   roomName: string
   uuid: string
   userId: number
+  adminId: number
 }

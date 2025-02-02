@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
-import type { IChats } from '../types/iChats'
 
 const prisma = new PrismaClient()
 
@@ -32,12 +31,10 @@ export const getAnaliseChat = async (req: Request, res: Response): Promise<void>
     console.log('fileLength', fileLength);
     
 
-    const analise = await prisma.analise.create({
-      data: {
-        fileLength,
-        textLength
-      }
-    })
+    const analise = {
+      fileLength,
+      textLength
+    }
     res.send(analise)
   }
 }
