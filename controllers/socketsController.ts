@@ -21,6 +21,8 @@ const sockets = (io: Server) => {
       console.log('message', message);
       console.log('adminId', message.adminId);
 
+      console.log('test');
+
       const chat = await prisma.chats.findFirst({
         where: {
           userId: message.adminId,
