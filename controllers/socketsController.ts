@@ -18,10 +18,10 @@ const sockets = (io: Server) => {
     socket.on('message', async (message) => {
       io.to(message.uuid).emit('message', message)
 
-      console.log('message', message);
-      console.log('adminId', message.adminId);
+      console.log('message', message)
+      console.log('adminId', message.adminId)
 
-      console.log('test');
+      console.log('test')
 
       const chat = await prisma.chats.findFirst({
         where: {
@@ -30,7 +30,7 @@ const sockets = (io: Server) => {
         }
       })
 
-      console.log('admin chat', chat);
+      console.log('admin chat', chat)
 
       if (chat) {
         await prisma.message.create({
@@ -72,7 +72,7 @@ const sockets = (io: Server) => {
         }
       })
 
-      console.log('save chat', chat);
+      console.log('save chat', chat)
 
       if (chat) {
         await prisma.chats.create({
@@ -86,20 +86,25 @@ const sockets = (io: Server) => {
               create: chat.messages.map(({ id, chatId, ...message }) => message)
             }
           }
-        })  
+        })
       }
 
       // console.log('chat', chat);
-      
     })
 
     socket.on('messageInvite', async (data) => {
       // console.log('invite data', data);
-      
 
       socket.broadcast
         .to(data.userUuid)
-        .emit('messageInvite', data.uuidRoom, data.titleRoom, data.userUuid, data.roomId, data.adminId)
+        .emit(
+          'messageInvite',
+          data.uuidRoom,
+          data.titleRoom,
+          data.userUuid,
+          data.roomId,
+          data.adminId
+        )
       // console.log(
       //   `Пользователь ${data.userUuid} приглашен в комнату ${data.titleRoom} [${data.uuidRoom}]`
       // )

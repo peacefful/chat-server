@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { log } from 'console'
 
 const prisma = new PrismaClient()
 
@@ -34,7 +35,53 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
         chats: true
       }
     })
-    res.send(user)
+
+    if (user?.chats) {
+      for (const chat of user?.chats) {
+        let otherAdminId = 0
+        let otherAdminUuid = ''
+        let chatId = 0
+
+        if (chat.adminId !== user.id) {
+          chatId = chat.id
+          otherAdminId = chat.adminId
+          otherAdminUuid = chat.uuid
+
+          const otherAdmin = await prisma.user.findUnique({
+            where: {
+              id: otherAdminId
+            },
+            include: {
+              chats: true
+            }
+          })
+
+          const otherAdminChat = otherAdmin?.chats.find((chat) => {
+            return chat.uuid === otherAdminUuid
+          })
+
+          if (!otherAdminChat) {
+            await prisma.chats.delete({
+              where: {
+                id: chatId,
+                uuid: otherAdminUuid
+              }
+            })
+          }
+        }
+      }
+    }
+
+    const updatedUser = await prisma.user.findUnique({
+      where: {
+        id: user?.id
+      },
+      include: {
+        chats: true
+      }
+    })
+
+    res.send(updatedUser)
   } catch (error) {
     console.log(error)
   }
@@ -131,26 +178,26 @@ export const refreshToken = async (
   res: Response<any, Record<string, any>>
 ): Promise<void> => {
   try {
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.body
     if (!refreshToken) {
       res.status(400).json({
         message: 'Отсутствует refreshToken'
-      });
+      })
     }
 
     jwt.verify(refreshToken, keyJwt, async (err: any, decoded: any) => {
       if (err) {
         return res.status(401).json({
           message: 'Неверный или истекший refreshToken'
-        });
+        })
       }
       const user = await prisma.user.findUnique({
         where: { id: decoded.id }
-      });
+      })
       if (!user) {
         return res.status(404).json({
           message: 'Пользователь не найден'
-        });
+        })
       }
 
       const accessToken = jwt.sign(
@@ -160,7 +207,7 @@ export const refreshToken = async (
         },
         keyJwt,
         { expiresIn: '2m' }
-      );
+      )
 
       const newRefreshToken = jwt.sign(
         {
@@ -169,16 +216,16 @@ export const refreshToken = async (
         },
         keyJwt,
         { expiresIn: '7d' }
-      );
+      )
       res.status(200).json({
         accessToken,
         refreshToken: newRefreshToken
-      });
-    });
+      })
+    })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     res.status(500).json({
       message: 'Ошибка сервера'
-    });
+    })
   }
-};
+}

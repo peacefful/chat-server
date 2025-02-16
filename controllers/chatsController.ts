@@ -1,4 +1,4 @@
-  import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import type { IChats } from '../types/iChats'
 
@@ -49,7 +49,7 @@ export const addChat = async (req: Request, res: Response): Promise<void> => {
     const chatData: IChats = req.body
     const chats = await prisma.chats.create({
       data: {
-        ...chatData,
+        ...chatData
       }
     })
     res.send(chats)
