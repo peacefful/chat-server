@@ -33,13 +33,13 @@ model Chats {
   @@map("chats")
 }
 
-
 model Message {
   id       Int    @id @default(autoincrement())
   chatId   Int 
   userId   Int 
   text     String
   sendTime String
+  sendDate String
   username String
   uuid     String
   file     String
@@ -48,11 +48,29 @@ model Message {
   @@map("message")
 }
 
-
 model Analise {
   id       Int    @id @default(autoincrement())
   fileLength   Int 
   textLength   Int 
   
   @@map("analise")
+}
+
+model MessagesOfMounth {
+  id       Int    @id @default(autoincrement())
+  mounthName String
+  messages AnaliseUserMessage[]
+
+  @@map("messagesOfMounth")
+}
+
+model AnaliseUserMessage {
+  id       Int    @id @default(autoincrement())
+  username String
+  fileLength   Int 
+  textLength   Int 
+  analiseUserMessageId Int
+  messagesOfMounth     MessagesOfMounth   @relation(fields: [analiseUserMessageId], references: [id], onDelete: Cascade)
+
+  @@map("analiseUserMessage")
 }

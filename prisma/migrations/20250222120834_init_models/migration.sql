@@ -29,6 +29,7 @@ CREATE TABLE "message" (
     "userId" INTEGER NOT NULL,
     "text" TEXT NOT NULL,
     "sendTime" TEXT NOT NULL,
+    "sendDate" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "uuid" TEXT NOT NULL,
     "file" TEXT NOT NULL,

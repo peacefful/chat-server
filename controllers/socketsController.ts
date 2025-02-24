@@ -18,10 +18,10 @@ const sockets = (io: Server) => {
     socket.on('message', async (message) => {
       io.to(message.uuid).emit('message', message)
 
-      console.log('message', message)
-      console.log('adminId', message.adminId)
+      // console.log('message', message)
+      // console.log('adminId', message.adminId)
 
-      console.log('test')
+      // console.log('test')
 
       const chat = await prisma.chats.findFirst({
         where: {
@@ -30,12 +30,13 @@ const sockets = (io: Server) => {
         }
       })
 
-      console.log('admin chat', chat)
+      // console.log('admin chat', chat)
 
       if (chat) {
         await prisma.message.create({
           data: {
             chatId: chat.id,
+            sendDate: message.sendDate,
             userId: +message.userId,
             text: message.text,
             sendTime: message.sendTime,
@@ -59,8 +60,8 @@ const sockets = (io: Server) => {
     })
 
     socket.on('saveChat', async (adminId, userId, uuid) => {
-      console.log(`adminId ${adminId}`)
-      console.log(`uuid ${uuid}`)
+      // console.log(`adminId ${adminId}`)
+      // console.log(`uuid ${uuid}`)
 
       const chat = await prisma.chats.findFirst({
         where: {
@@ -72,7 +73,7 @@ const sockets = (io: Server) => {
         }
       })
 
-      console.log('save chat', chat)
+      // console.log('save chat', chat)
 
       if (chat) {
         await prisma.chats.create({
