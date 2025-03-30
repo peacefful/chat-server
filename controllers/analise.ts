@@ -17,18 +17,18 @@ export const getAnaliseChat = async (req: Request, res: Response): Promise<void>
   })
 
   const analiseOfMounth: IAnaliseChatOfMounth[] = [
-    { mounthName: 'January' },
-    { mounthName: 'February' },
-    { mounthName: 'March' },
-    { mounthName: 'April' },
-    { mounthName: 'May' },
-    { mounthName: 'June' },
-    { mounthName: 'July' },
-    { mounthName: 'August' },
-    { mounthName: 'September' },
-    { mounthName: 'October' },
-    { mounthName: 'November' },
-    { mounthName: 'December' }
+    { mounthName: 'january' },
+    { mounthName: 'february' },
+    { mounthName: 'march' },
+    { mounthName: 'april' },
+    { mounthName: 'may' },
+    { mounthName: 'june' },
+    { mounthName: 'july' },
+    { mounthName: 'august' },
+    { mounthName: 'september' },
+    { mounthName: 'october' },
+    { mounthName: 'november' },
+    { mounthName: 'december' }
   ]
 
   if (chat) {

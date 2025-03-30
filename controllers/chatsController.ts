@@ -79,6 +79,7 @@ export const updateChat = async (req: Request, res: Response): Promise<void> => 
 export const deleteChat = async (req: Request, res: Response): Promise<void> => {
   try {
     const id: number = parseInt(req.params.id)
+    // const adminId: number = req.params.adminId
     const chats = await prisma.chats.delete({
       where: {
         id

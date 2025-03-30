@@ -60,34 +60,38 @@ const sockets = (io: Server) => {
     })
 
     socket.on('saveChat', async (adminId, userId, uuid) => {
-      // console.log(`adminId ${adminId}`)
+      console.log(`adminId ${adminId}`)
       // console.log(`uuid ${uuid}`)
 
-      const chat = await prisma.chats.findFirst({
-        where: {
-          adminId: adminId,
-          uuid
-        },
-        include: {
-          messages: true
-        }
-      })
-
-      // console.log('save chat', chat)
-
-      if (chat) {
-        await prisma.chats.create({
-          data: {
-            uuid: chat.uuid,
-            roomName: chat.roomName,
-            description: chat.description,
-            userId,
-            adminId: chat.adminId,
-            messages: {
-              create: chat.messages.map(({ id, chatId, ...message }) => message)
-            }
+      try {
+        const chat = await prisma.chats.findFirst({
+          where: {
+            adminId: adminId,
+            uuid
+          },
+          include: {
+            messages: true
           }
         })
+
+        // console.log('save chat', chat)
+
+        if (chat) {
+          await prisma.chats.create({
+            data: {
+              uuid: chat.uuid,
+              roomName: chat.roomName,
+              description: chat.description,
+              userId,
+              adminId: chat.adminId,
+              messages: {
+                create: chat.messages.map(({ id, chatId, ...message }) => message)
+              }
+            }
+          })
+        }
+      } catch (error) {
+        console.log(error)
       }
 
       // console.log('chat', chat);
