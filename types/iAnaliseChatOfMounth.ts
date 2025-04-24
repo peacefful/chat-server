@@ -1,4 +1,4 @@
-import { IAnaliseUserMessage } from "./iAnaliseUserMessage"
+import { IAnaliseUserMessage } from './iAnaliseUserMessage'
 
 export type IAnaliseChatOfMounth = {
   mounthName: string

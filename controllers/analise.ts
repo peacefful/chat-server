@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import e, { Request, Response } from 'express'
-import { type IAnaliseChatOfMounth } from "../types/iAnaliseChatOfMounth"
-import { getAnaliseChatOfMounth } from "../utils/getAnaliseChatOfMounth"
+import { type IAnaliseChatOfMounth } from '../types/iAnaliseChatOfMounth'
+import { getAnaliseChatOfMounth } from '../utils/getAnaliseChatOfMounth'
 
 const prisma = new PrismaClient()
 
@@ -29,27 +29,41 @@ export const getAnaliseChat = async (req: Request, res: Response): Promise<void>
     { mounthName: 'October' },
     { mounthName: 'November' },
     { mounthName: 'December' }
-  ];
+  ]
 
   if (chat) {
-
-    let fileLength = 0;
-    let textLength = 0;
-
+    let chatFileLength = 0
+    let chatTextLength = 0
 
     for (const element of chat.messages) {
-      if (element.text?.length) textLength += 1;
-      if (element.file?.length) fileLength += 1;
+      if (element.text?.length) chatTextLength += 1
+      if (element.file?.length) chatFileLength += 1
+
+      const userMessages = chat.messages.filter((message) => {
+        return message.userId === element.userId && message.sendDate === element.sendDate
+      })
+
+      let userFileLength = 0
+      let userTextLength = 0
+
+      userMessages.forEach((message) => {
+        if (message.text.length) userTextLength += 1
+        if (message.file.length) userFileLength += 1
+      })
 
       getAnaliseChatOfMounth({
         message: element,
-        analiseOfMounth
+        analiseOfMounth,
+        userMessagesSum: userMessages.length,
+        userId: element.userId,
+        userFileLength,
+        userTextLength
       })
     }
 
     const analise = {
-      textLength,
-      fileLength,
+      chatTextLength,
+      chatFileLength,
       analiseOfMounth
     }
     res.send(analise)

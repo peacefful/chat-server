@@ -1,83 +1,96 @@
-import { type IAnaliseChatOfMounth } from "../types/iAnaliseChatOfMounth";
-import { IAnaliseUserMessage } from "../types/iAnaliseUserMessage";
-import { IMessage } from "../types/iMessage";
+import { type IAnaliseChatOfMounth } from '../types/iAnaliseChatOfMounth'
+import { IAnaliseUserMessage } from '../types/iAnaliseUserMessage'
+import { IMessage } from '../types/iMessage'
 
 export type IGetAnaliseChatOfMounth = {
-  message: IMessage 
+  message: IMessage
   analiseOfMounth: IAnaliseChatOfMounth[]
+  userMessagesSum: number
+  userId: number
+  userFileLength: number
+  userTextLength: number
 }
 
 export type IIsEmptyUserAnaliseMessage = {
   index: number
-} & Pick<IGetAnaliseChatOfMounth, 'analiseOfMounth' | 'message'>
+} & Pick<
+  IGetAnaliseChatOfMounth,
+  'userId' | 'analiseOfMounth' | 'message' | 'userMessagesSum' | 'userFileLength' | 'userTextLength'
+>
 
 const isEmptyUserAnaliseMessage = (data: IIsEmptyUserAnaliseMessage) => {
-  const { analiseOfMounth, index, message } = data;
+  const {
+    analiseOfMounth,
+    index,
+    message,
+    userMessagesSum,
+    userId,
+    userFileLength,
+    userTextLength
+  } = data
 
-  console.log('analiseOfMounth[index]', analiseOfMounth[index]);
-
-  if (!analiseOfMounth || !analiseOfMounth[index]) return;
+  if (!analiseOfMounth || !analiseOfMounth[index]) return
 
   if (!analiseOfMounth[index].userAnaliseMessage) {
     analiseOfMounth[index].userAnaliseMessage = []
   }
 
-  const userAnaliseMessage = analiseOfMounth[index].userAnaliseMessage;
-  if (!userAnaliseMessage) return; // <-- гарантируем, что объект не `undefined`
+  const userAnaliseMessage = analiseOfMounth[index].userAnaliseMessage
+  if (!userAnaliseMessage) return // <-- гарантируем, что объект не `undefined`
 
-  let fileLength = 0;
-  let textLength = 0;
+  const user = userAnaliseMessage.find((analiseMessage) => analiseMessage.userId === userId)
 
-  if (message.text?.length) textLength += 1;
-  if (message.file?.length) fileLength += 1;
-
-  userAnaliseMessage.push({username: message.username, textLength, fileLength})
+  if (!user?.userId) {
+    userAnaliseMessage.push({
+      username: message.username,
+      userFileLength,
+      userTextLength,
+      userMessagesSum,
+      userId
+    })
+  }
 
   analiseOfMounth[index].userAnaliseMessage = userAnaliseMessage
-};
-
-
+}
 
 export const getAnaliseChatOfMounth = (data: IGetAnaliseChatOfMounth) => {
-  const {message, analiseOfMounth} = data
+  const { message } = data
 
-  console.log('message.sendDate', message.sendDate);
-
-  switch(message.sendDate) {
+  switch (message.sendDate) {
     case 'Jan':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 0})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 0 })
+      break
     case 'Feb':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 1})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 1 })
+      break
     case 'Mar':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 2})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 2 })
+      break
     case 'Apr':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 3})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 3 })
+      break
     case 'May':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 4})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 4 })
+      break
     case 'Jun':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 5})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 5 })
+      break
     case 'Jul':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 6})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 6 })
+      break
     case 'Aug':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 7})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 7 })
+      break
     case 'Sep':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 8})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 8 })
+      break
     case 'Oct':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 9})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 9 })
+      break
     case 'Nov':
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 10})
-      break;
+      isEmptyUserAnaliseMessage({ ...data, index: 10 })
+      break
     default:
-      isEmptyUserAnaliseMessage({analiseOfMounth, message, index: 11})
+      isEmptyUserAnaliseMessage({ ...data, index: 11 })
   }
 }

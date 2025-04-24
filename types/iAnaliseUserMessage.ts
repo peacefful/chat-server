@@ -1,5 +1,7 @@
 export type IAnaliseUserMessage = {
   username: string
-  fileLength: number 
-  textLength:number
+  userFileLength: number
+  userTextLength: number
+  userMessagesSum: number
+  userId: number
 }
