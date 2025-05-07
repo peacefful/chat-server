@@ -3,5 +3,5 @@ services:
     name: chat-api
     env: node
     buildCommand: 'npm install'
-    startCommand: 'npm run server'
-    postDeployCommand: 'npx prisma migrate deploy'
+    startCommand: |
+      npx prisma migrate deploy && npm run server
