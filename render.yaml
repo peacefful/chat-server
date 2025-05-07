@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: chat-api
+    env: node
+    buildCommand: 'npm install'
+    startCommand: 'npm run server'
+    postDeployCommand: 'prisma migrate deploy'
