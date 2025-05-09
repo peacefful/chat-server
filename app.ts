@@ -30,7 +30,8 @@ const io = new Server(server, {
       'http://localhost:5173',
       'http://localhost:3000',
       'http://141.98.154.78:8080/',
-      'https://peacefful.github.io'
+      'https://peacefful.github.io',
+      'https://poligramm.vercel.app/'
     ]
   }
 })
