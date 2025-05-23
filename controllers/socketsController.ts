@@ -15,8 +15,35 @@ const sockets = (io: Server) => {
       socket.broadcast.to(room).emit('userJoin', user)
     })
 
+    socket.on('closeChatByUuid', async ({ adminId, userUuid }) => {
+      console.log('closeChatByUuid', adminId, userUuid)
+
+      try {
+        const currentChat = await prisma.chats.findFirst({
+          where: {
+            adminId
+          }
+        })
+
+        const joinedUsersIds = currentChat?.joinedUsersIds?.filter((uuid) => uuid !== userUuid)
+
+        await prisma.chats.update({
+          where: {
+            id: currentChat?.id
+          },
+          data: {
+            joinedUsersIds: joinedUsersIds
+          }
+        })
+      } catch (error) {
+        console.log('Error closing chat:', error)
+      }
+    })
+
     socket.on('message', async (message) => {
       io.to(message.uuid).emit('message', message)
+
+      console.log('message', message)
 
       // console.log('message', message)
       // console.log('adminId', message.adminId)
@@ -83,6 +110,7 @@ const sockets = (io: Server) => {
               roomName: chat.roomName,
               description: chat.description,
               userId,
+              joinedUsersIds: chat.joinedUsersIds,
               adminId: chat.adminId,
               messages: {
                 create: chat.messages.map(({ id, chatId, ...message }) => message)
@@ -98,8 +126,6 @@ const sockets = (io: Server) => {
     })
 
     socket.on('messageInvite', async (data) => {
-      // console.log('invite data', data);
-
       socket.broadcast
         .to(data.userUuid)
         .emit(
@@ -110,6 +136,27 @@ const sockets = (io: Server) => {
           data.roomId,
           data.adminId
         )
+
+      const chat = await prisma.chats.findFirst({
+        where: {
+          id: data.roomId
+        },
+        include: {
+          messages: true
+        }
+      })
+
+      if (chat?.id) {
+        await prisma.chats.update({
+          where: {
+            id: data.roomId
+          },
+          data: {
+            joinedUsersIds: [...chat.joinedUsersIds, data.userUuid]
+          }
+        })
+      }
+
       // console.log(
       //   `Пользователь ${data.userUuid} приглашен в комнату ${data.titleRoom} [${data.uuidRoom}]`
       // )

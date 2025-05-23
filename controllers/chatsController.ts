@@ -19,6 +19,9 @@ export const getChats = async (req: Request, res: Response): Promise<void> => {
 
 export const getChat = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userUuid: string = req.body.uuid
+    const userId: string = req.body.id
+
     const id: number = parseInt(req.params.id)
     const chat = await prisma.chats.findFirst({
       where: {
@@ -38,7 +41,15 @@ export const getChat = async (req: Request, res: Response): Promise<void> => {
       }
     })
 
-    res.send(chatWithMessages)
+    const isJoinedUser = chat?.joinedUsersIds?.includes(userUuid)
+
+    if (+userId === chat?.adminId) {
+      res.send(chatWithMessages)
+    } else if (isJoinedUser) {
+      res.send(chatWithMessages)
+    } else {
+      res.status(403).json({ message: 'Access is denied' })
+    }
   } catch (error) {
     console.log(error)
   }
