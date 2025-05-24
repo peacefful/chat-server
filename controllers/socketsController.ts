@@ -86,7 +86,7 @@ const sockets = (io: Server) => {
       // console.log(`User joined room ${uuid}`)
     })
 
-    socket.on('saveChat', async (adminId, userId, uuid) => {
+    socket.on('saveChat', async (adminId, userId, uuid, callback) => {
       console.log(`adminId ${adminId}`)
       // console.log(`uuid ${uuid}`)
 
@@ -104,7 +104,7 @@ const sockets = (io: Server) => {
         // console.log('save chat', chat)
 
         if (chat) {
-          await prisma.chats.create({
+          const userChat = await prisma.chats.create({
             data: {
               uuid: chat.uuid,
               roomName: chat.roomName,
@@ -117,6 +117,7 @@ const sockets = (io: Server) => {
               }
             }
           })
+          callback({ id: userChat.id })
         }
       } catch (error) {
         console.log(error)
