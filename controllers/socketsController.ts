@@ -101,8 +101,6 @@ const sockets = (io: Server) => {
           }
         })
 
-        // console.log('save chat', chat)
-
         if (chat) {
           const userChat = await prisma.chats.create({
             data: {
@@ -117,7 +115,7 @@ const sockets = (io: Server) => {
               }
             }
           })
-          callback({ id: userChat.id })
+          await callback({ id: userChat.id })
         }
       } catch (error) {
         console.log(error)
